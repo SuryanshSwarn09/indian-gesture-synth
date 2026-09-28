@@ -1,7 +1,7 @@
 {
-  "name": "gesture-synth",
+  "name": "indian-gesture-synth",
   "version": "1.0.0",
-  "description": "",
+  "description": "Camera-based Indian Classical Music Synthesizer with Swaras, Thaats, Meend, and Tanpura",
   "main": "index.js",
   "scripts": {
     "dev": "vite",

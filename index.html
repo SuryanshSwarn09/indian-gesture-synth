@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Gesture Synth</title>
+<title>Indian Classical Gesture Synth</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;500;600;700&family=Yatra+One&display=swap" rel="stylesheet">
 
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -14,11 +18,17 @@
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 html, body {
   margin: 0;
   height: 100%;
-  background: #111;
+  background: #090a0f;
+  color: #f1f5f9;
+  font-family: 'Outfit', sans-serif;
   overflow: hidden;
+  user-select: none;
 }
 #stage {
   position: fixed;
@@ -36,19 +46,292 @@ html, body {
   width: 100%;
   height: 100%;
 }
+#overlay.dimmed {
+  filter: grayscale(1) brightness(0.5);
+}
+
+/* Glass control panel */
+.control-panel {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+  max-width: 260px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #f59e0b;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.app-select, .app-btn {
+  background: rgba(18, 20, 29, 0.88);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  backdrop-filter: blur(8px);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.app-select:hover, .app-btn:hover {
+  border-color: #f59e0b;
+  background: rgba(28, 32, 48, 0.95);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.app-select:focus {
+  border-color: #fbbf24;
+}
+
+.app-select option {
+  background: #111422;
+  color: #fcd34d;
+}
+
+/* Tanpura Section */
+.tanpura-box {
+  background: rgba(16, 18, 28, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.tanpura-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tanpura-toggle-btn {
+  flex: 1;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(25, 28, 40, 0.9);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tanpura-toggle-btn.active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fff;
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.tanpura-slider {
+  width: 100%;
+  accent-color: #f59e0b;
+  height: 4px;
+}
+
+/* Guide Button & Container */
+#guideToggle {
+  align-self: flex-start;
+}
+
+#gestureGuide {
+  position: absolute;
+  top: 14px;
+  left: 285px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 10;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(15, 17, 26, 0.92);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  min-width: 200px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+#gestureGuide.hidden {
+  display: none;
+}
+
+.gesture-guide-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  padding-bottom: 4px;
+}
+
+.gesture-guide-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.gesture-guide-swara {
+  color: #fcd34d;
+  font-weight: 600;
+  font-family: 'Yatra One', sans-serif;
+  font-size: 15px;
+}
+
+.gesture-guide-note {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.gesture-guide-gesture {
+  font-size: 16px;
+}
+
+/* Central Swara HUD */
+#hudContainer {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 5;
+  text-align: center;
+}
+
+#swaraDevanagari {
+  font-family: 'Yatra One', sans-serif;
+  font-size: 68px;
+  line-height: 1;
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 40px rgba(245, 158, 11, 0.4);
+  letter-spacing: 0.02em;
+  transition: transform 0.1s ease;
+}
+
+#chordDisplay {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fcd34d;
+  margin-top: 4px;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+  letter-spacing: 0.05em;
+}
+
+#qualityDisplay {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-top: 2px;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+#saptakIndicator {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fde68a;
+  margin-top: 4px;
+}
+
+/* Volume Meter */
+#volumeMeter {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  pointer-events: none;
+  z-index: 10;
+}
+.vol-bar {
+  width: 60px;
+  height: 7px;
+  background: rgba(30, 34, 48, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 2px;
+  transition: background 0.08s;
+}
+.vol-bar.lit {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+  border-color: #fbbf24;
+}
+
+/* Meend / Filter Display */
+#distortionDisplay {
+  position: absolute;
+  top: 100px;
+  right: 14px;
+  color: #fcd34d;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  pointer-events: none;
+  z-index: 10;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+/* Help Button & Modal */
 #helpButton {
   position: absolute;
   bottom: 16px;
   left: 16px;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid #e8a13d00;
-  background: rgba(20,20,20,0.85);
-  color: #e8a13d;
-  font-size: 22px;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  background: rgba(18, 20, 30, 0.9);
+  color: #fcd34d;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  z-index: 6;
+  z-index: 20;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+#helpButton:hover {
+  background: #f59e0b;
+  color: #111;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
 }
 
 #helpModal.hidden {
@@ -56,212 +339,110 @@ html, body {
 }
 
 #helpModal {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(6, 8, 14, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 20;
+  z-index: 50;
+  backdrop-filter: blur(6px);
 }
 
 .help-content {
-  background: #1a1a1a;
-  color: white;
-  border: 1px solid #e8a13d;
-  border-radius: 10px;
-  width: min(500px, 90vw);
-  max-height: 80vh;
+  background: #111422;
+  color: #e2e8f0;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 12px;
+  width: min(580px, 92vw);
+  max-height: 85vh;
   overflow-y: auto;
-  padding: 24px;
-  font-family: monospace;
+  padding: 26px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.8);
 }
 
 #closeHelp {
   float: right;
   background: none;
   border: none;
-  color: #e8a13d;
-  font-size: 20px;
+  color: #f59e0b;
+  font-size: 22px;
   cursor: pointer;
 }
 
-.help-content h2,
+.help-content h2 {
+  font-family: 'Cinzel', serif;
+  color: #f59e0b;
+  margin-top: 0;
+}
+
 .help-content h3 {
-  color: #e8a13d;
+  color: #fbbf24;
+  margin-top: 18px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  padding-bottom: 4px;
+}
+
+.help-content p {
+  line-height: 1.5;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.help-content b {
+  color: #fde68a;
 }
 
 .help-content a {
-  color: #e8a13d;
+  color: #f59e0b;
   text-decoration: none;
 }
 
-.help-content a:hover {
-  color: #ffbf5c;
-}
-#keySelect {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #1a1a1a;
-  color: #e8a13d;
-  border: 1px solid #3a3428;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 14px;
-  padding: 4px 8px;
-  z-index: 5;
-}
-#toneSelect {
-  position: absolute;
-  top: 48px;
-  left: 12px;
-  background: #1a1a1a;
-  color: #e8a13d;
-  border: 1px solid #3a3428;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 14px;
-  padding: 4px 8px;
-  z-index: 5;
-}
-
-#guideToggle {
-  position: absolute;
-  top: 90px;
-  left: 12px;
-  background: #1a1a1a;
-  color: #e8a13d;
-  border: 1px solid #3a3428;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 14px;
-  padding: 4px 8px;
-  cursor: pointer;
-  z-index: 5;
-}
-
-#gestureGuide {
-  position: absolute;
-  top: 128px;
-  left: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 5;
-  font-family: monospace;
-  padding: 10px 14px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(20,20,20,0.85), rgba(20,20,20,0.55));
-}
-
-#gestureGuide.hidden {
-  display: none;
-}
-
-.gesture-guide-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.gesture-guide-note {
-  width: 28px;
-  color: #e8a13d;
-  font-size: 14px;
-}
-
-.gesture-guide-gesture {
-  font-size: 20px;
-}
-#chordDisplay {
-  position: absolute;
-  bottom: 35px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #e8a13d;
-  font-size: 42px;
-  font-family: monospace;
-  font-weight: bold;
-  text-shadow: 0 0 12px rgba(232, 161, 61, 0.6);
-  pointer-events: none;
-}
-#volumeMeter {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 3px;
-  pointer-events: none;
-}
-.vol-bar {
-  width: 70px;
-  height: 8px;
-  background: #3a3428;
-  border-radius: 2px;
-}
-.vol-bar.lit {
-  background: #e8a13d;
-}
-/* Add this style rule inside your <style> section */
-#distortionDisplay {
-  position: absolute;
-  top: 105px; /* Sits perfectly below your 8 volume bars */
-  right: 12px;
-  color: #e8a13d;
-  font-family: monospace;
-  font-size: 14px;
-  text-align: right;
-  pointer-events: none;
-}
-#qualityDisplay {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #e8a13d;
-  font-size: 12px;
-  font-family: monospace;
-  pointer-events: none;
-}
+/* Start Overlay */
 #startOverlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: radial-gradient(circle at center, rgba(16, 20, 32, 0.85) 0%, rgba(6, 8, 14, 0.96) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 10vh;
-  gap: 16px;
+  justify-content: center;
+  gap: 20px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
   box-sizing: border-box;
 }
 
 .start-circle {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: #fff;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 30px;
   color: #111;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#startOverlay:hover .start-circle {
+  transform: scale(1.08);
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.9);
 }
 
 .start-text {
-  color: #fff;
-  font-family: monospace;
-  font-size: 16px;
-  letter-spacing: 0.05em;
+  color: #f8fafc;
+  font-size: 18px;
+  letter-spacing: 0.04em;
   text-align: center;
 }
 
-#overlay.dimmed {
-  filter: grayscale(1) brightness(0.6);
+.start-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 6px;
 }
 </style>
 </head>
@@ -269,7 +450,110 @@ html, body {
 <div id="stage">
   <video id="webcam" autoplay playsinline muted></video>
   <canvas id="overlay" class="dimmed"></canvas>
-  <div id="chordDisplay">--</div>
+
+  <!-- Left Control Panel -->
+  <div class="control-panel">
+    <!-- Music Mode Toggle -->
+    <div class="control-group">
+      <span class="control-label">System Mode</span>
+      <select id="modeSelect" class="app-select">
+        <option value="indian" selected>Indian Classical (Swaras)</option>
+        <option value="western">Western Chords (Original)</option>
+      </select>
+    </div>
+
+    <!-- Thaat Selection (Active in Indian Mode) -->
+    <div class="control-group" id="thaatGroup">
+      <span class="control-label">Thaat (Parent Scale)</span>
+      <select id="thaatSelect" class="app-select">
+        <option value="bilawal" selected>Bilawal (बिलावल)</option>
+        <option value="kalyan">Kalyan / Yaman (कल्याण)</option>
+        <option value="khamaj">Khamaj (खमाज)</option>
+        <option value="kafi">Kafi (काफ़ी)</option>
+        <option value="asavari">Asavari (आसावरी)</option>
+        <option value="bhairav">Bhairav (भैरव)</option>
+        <option value="bhairavi">Bhairavi (भैरवी)</option>
+        <option value="todi">Todi (तोड़ी)</option>
+        <option value="poorvi">Poorvi (पूर्वी)</option>
+        <option value="marwa">Marwa (मारवा)</option>
+      </select>
+    </div>
+
+    <!-- Tonic / Sur Key Selection -->
+    <div class="control-group">
+      <span class="control-label">Base Sur (Sa / Key)</span>
+      <select id="keySelect" class="app-select">
+        <option value="138.59" data-note="Db" selected>C# / Db (काली 1 - 138 Hz)</option>
+        <option value="146.83" data-note="D">D (सफ़ेद 2 - 147 Hz)</option>
+        <option value="155.56" data-note="Eb">D# / Eb (काली 2 - 156 Hz)</option>
+        <option value="164.81" data-note="E">E (सफ़ेद 3 - 165 Hz)</option>
+        <option value="174.61" data-note="F">F (सफ़ेद 4 - 175 Hz)</option>
+        <option value="185.00" data-note="Gb">F# / Gb (काली 3 - 185 Hz)</option>
+        <option value="196.00" data-note="G">G (सफ़ेद 5 - 196 Hz)</option>
+        <option value="207.65" data-note="Ab">G# / Ab (काली 4 - 208 Hz)</option>
+        <option value="220.00" data-note="A">A (सफ़ेद 6 - 220 Hz)</option>
+        <option value="233.08" data-note="Bb">A# / Bb (काली 5 - 233 Hz)</option>
+        <option value="246.94" data-note="B">B (सफ़ेद 7 - 247 Hz)</option>
+        <option value="261.63" data-note="C">C (सफ़ेद 1 - 262 Hz)</option>
+      </select>
+    </div>
+
+    <!-- Tuning System -->
+    <div class="control-group" id="tuningGroup">
+      <span class="control-label">Microtonal Tuning</span>
+      <select id="tuningSelect" class="app-select">
+        <option value="shruti" selected>22 Shrutis (Just Intonation)</option>
+        <option value="equal">12-TET (Equal Temperament)</option>
+      </select>
+    </div>
+
+    <!-- Timbre / Instrument Waveform -->
+    <div class="control-group">
+      <span class="control-label">Sound Timbre</span>
+      <select id="toneSelect" class="app-select">
+        <option value="bansuri" selected>Bansuri (Bamboo Flute)</option>
+        <option value="sitar">Sitar (Resonant Pluck)</option>
+        <option value="harmonium">Harmonium (Reed Organ)</option>
+        <option value="triangle">Warm Synth (Triangle)</option>
+        <option value="sawtooth">Bright Synth (Sawtooth)</option>
+      </select>
+    </div>
+
+    <!-- Tanpura Drone Controls -->
+    <div class="tanpura-box">
+      <div class="tanpura-row">
+        <span class="control-label">Tanpura Drone</span>
+        <button id="tanpuraToggle" class="tanpura-toggle-btn active">ON</button>
+      </div>
+      <div class="tanpura-row">
+        <span style="font-size: 11px; color: #94a3b8;">1st String:</span>
+        <select id="tanpuraStringSelect" class="app-select" style="padding: 2px 6px; font-size: 11px;">
+          <option value="P" selected>Pa (पancham)</option>
+          <option value="m">Ma (Madhyam)</option>
+          <option value="N">Ni (Nishad)</option>
+        </select>
+      </div>
+      <input type="range" id="tanpuraVolume" class="tanpura-slider" min="0" max="1" step="0.05" value="0.65" title="Tanpura Volume">
+    </div>
+
+    <button id="guideToggle" class="app-btn">Mudra Guide</button>
+  </div>
+
+  <!-- Dynamic Swara Mudra Guide -->
+  <div id="gestureGuide" class="hidden">
+    <div class="gesture-guide-title">Swara Mudras</div>
+    <div id="guideContent"></div>
+  </div>
+
+  <!-- Center Dynamic HUD -->
+  <div id="hudContainer">
+    <div id="swaraDevanagari">--</div>
+    <div id="chordDisplay">--</div>
+    <div id="qualityDisplay">--</div>
+    <div id="saptakIndicator">Madhya Saptak</div>
+  </div>
+
+  <!-- Volume LED Meter (Right Side) -->
   <div id="volumeMeter">
     <div class="vol-bar" data-index="7"></div>
     <div class="vol-bar" data-index="6"></div>
@@ -280,97 +564,71 @@ html, body {
     <div class="vol-bar" data-index="1"></div>
     <div class="vol-bar" data-index="0"></div>
   </div>
-  <select id="keySelect">
-  <option value="220.00" data-note="A" selected>A</option>
-  <option value="233.08" data-note="Bb">A#/Bb</option>
-  <option value="246.94" data-note="B">B</option>
-  <option value="261.63" data-note="C">C</option>
-  <option value="277.18" data-note="Db">C#/Db</option>
-  <option value="293.66" data-note="D">D</option>
-  <option value="311.13" data-note="Eb">D#/Eb</option>
-  <option value="329.63" data-note="E">E</option>
-  <option value="349.23" data-note="F">F</option>
-  <option value="369.99" data-note="Gb">F#/Gb</option>
-  <option value="392.00" data-note="G">G</option>
-  <option value="415.30" data-note="Ab">G#/Ab</option>
-</select>
 
-<select id="toneSelect">
-  <option value="triangle" selected>Warm Synth</option>
-  <option value="sawtooth">Bright Synth</option>
-  <option value="square">Retro Synth</option>
-</select>
-<button id="guideToggle">Open Guide</button>
-<div id="gestureGuide" class="hidden"></div>
-  <div id="qualityDisplay">--</div>
-  <div id="distortionDisplay">Filter: 0%</div>
+  <div id="distortionDisplay">Meend: 0¢</div>
 
+  <!-- Help Button -->
   <button id="helpButton">?</button>
 
+  <!-- Help & Documentation Modal -->
   <div id="helpModal" class="hidden">
     <div class="help-content">
       <button id="closeHelp">✕</button>
 
-      <h2>Gesture Synth Guide</h2>
+      <h2>Indian Classical Gesture Synth</h2>
       <p>
-      Gesture Synth is an interactive musical instrument created by <a href="https://indecisiveeric.com">
-      Eric Wei</a>.
-      Use your hands to create chords, melodies, and sounds in real-time!
-      
+        An expressive camera-controlled instrument bridging Indian Classical Music (Swaras, Thaats, Meend, Tanpura) with computer vision and Web Audio synthesis.
       </p>
 
-      
+      <h3>Left Hand: Swara & Mudra Selection</h3>
+      <p>
+        <b>1 Finger (Index):</b> Sa (सा) - The root tonic<br>
+        <b>2 Fingers (Index + Middle):</b> Re (रे)<br>
+        <b>3 Fingers (Index + Middle + Ring):</b> Ga (ग)<br>
+        <b>4 Fingers (Index, Middle, Ring, Pinky):</b> Ma (म)<br>
+        <b>5 Fingers (Open Palm):</b> Pa (प) - Fifth<br>
+        <b>Index + Pinky:</b> Dha (ध)<br>
+        <b>Index + Pinky + Thumb:</b> Ni (नि)
+      </p>
+      <p>
+        <b>Wrist Horizontal Tilt:</b><br>
+        • Neutral / Inward: <b>Shuddha</b> (or Teevra for Ma)<br>
+        • Outward: <b>Komal</b> (flat) (or Shuddha Ma in Teevra Thaats)<br>
+        <i>Note: When resting neutral, Swaras automatically conform to the active Thaat!</i>
+      </p>
 
-      <h3>Left Hand</h3>
-      <p><b>Tilt</b><br>
-      Inward → Major<br>
-      Outward → Minor</p>
+      <h3>Right Hand: Expression, Meend & Saptak</h3>
+      <p>
+        <b>Wrist Height:</b> Controls volume / Swara Prana (Higher = Louder, Lower = Softer).<br>
+        <b>Wrist Horizontal Tilt:</b> Continuous <b>Meend / Gamaka</b> microtonal pitch glide (±100 cents) for authentic vocal/sitar portamento!<br>
+        <b>Thumb Extended:</b> Drops to <b>Mandra Saptak</b> (Lower octave).<br>
+        <b>Elevated Hand:</b> Ascends to <b>Tar Saptak</b> (Higher octave).
+      </p>
+      <p>
+        <b>Right Hand Fingers (Polyphony Mode):</b><br>
+        • 1 Finger: Solo Melodic Swara with fluid Meend portamento<br>
+        • 2 Fingers: Swara + Sa drone harmony<br>
+        • 3 Fingers: Swara + Sa + Pa accompaniment<br>
+        • 4 Fingers: Swarmandal resonant chord cascade
+      </p>
 
-      <p><b>Fingers (Scale Degree)</b><br>
-      1 → I<br>
-      2 → II<br>
-      3 → III<br>
-      4 → IV<br>
-      5 → V<br>
-      Index + Pinky → VI<br>
-      Index + Pinky + Thumb → VII</p>
-
-      <h3>Right Hand</h3>
-      <p><b>Fingers (Chord Quality)</b><br>
-      1 → Root Position<br>
-      2 → 1st Inversion<br>
-      3 → Major/Minor 7th<br>
-      4 → Dominant/Diminished 7th</p>
-
-      <p><b>Octave</b><br>
-      Thumb In → higher octave<br>
-      Thumb Out → lower octave</p>
-
-      <p><b>Tilt</b><br>
-      Inward → More Filter<br>
-      Outward → Less Filter</p>
-
-      <p><b>Height</b><br>
-      Higher → Louder<br>
-      Lower → Softer</p>
-
-      <a href="https://www.instagram.com/p/DbH1BACxNCG/" target="_blank" rel="noopener noreferrer">
-        📹 Gesture Synth tutorial by Eric Wei on Instagram
-      </a>
-
+      <h3>4-String Tanpura Drone</h3>
+      <p>
+        Synthesizes a continuous, meditative acoustic Tanpura with authentic harmonic <i>Jwari</i> buzz. Choose first string tuning (Pa, Ma, or Ni) to match your Raga.
+      </p>
     </div>
   </div>
 
+  <!-- Audio unlock overlay -->
   <div id="startOverlay">
     <div class="start-circle">▶</div>
     <div class="start-text">
-    click to enable audio
-    <br>
-    <br>
-    <small>Created by Eric Wei 🙌</small>
-  </div>
+      Click to Enable Audio
+      <div class="start-subtitle">Indian Classical Gesture Synth • MediaPipe Vision</div>
+    </div>
   </div>
 </div>
+
 <script type="module" src="/main.js"></script>
 </body>
 </html>
