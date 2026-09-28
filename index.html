@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Indian Classical Gesture Synth</title>
+<title>NAADA • Indian Classical Gesture Synth</title>
 
+<!-- Modern Regal Indian Classical Typography -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;500;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=Yatra+One&family=Rozha+One&display=swap" rel="stylesheet">
 
 <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -18,27 +19,47 @@
 </script>
 
 <style>
+:root {
+  --bg-dark: #07090e;
+  --panel-bg: rgba(14, 17, 27, 0.82);
+  --panel-border: rgba(245, 158, 11, 0.28);
+  --gold-primary: #f59e0b;
+  --gold-glow: #fbbf24;
+  --gold-dark: #d97706;
+  --amber-light: #fef3c7;
+  --saffron-red: #ea580c;
+  --peacock-teal: #06b6d4;
+  --lotus-crimson: #e11d48;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-blur: blur(14px);
+}
+
 * {
   box-sizing: border-box;
 }
+
 html, body {
   margin: 0;
   height: 100%;
-  background: #090a0f;
-  color: #f1f5f9;
+  background: var(--bg-dark);
+  color: var(--text-primary);
   font-family: 'Outfit', sans-serif;
   overflow: hidden;
   user-select: none;
 }
+
 #stage {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100dvh;
 }
+
 #webcam {
   display: none;
 }
+
 #overlay {
   position: absolute;
   top: 0;
@@ -46,23 +67,155 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
 #overlay.dimmed {
-  filter: grayscale(1) brightness(0.5);
+  filter: grayscale(1) brightness(0.4) contrast(1.2);
 }
 
-/* Glass control panel */
-.control-panel {
+/* Regal Top Header Banner */
+.app-header {
   position: absolute;
   top: 14px;
-  left: 14px;
+  left: 16px;
+  right: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 10;
-  max-width: 260px;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+  pointer-events: none;
 }
 
-.control-group {
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.brand-crest {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-glow) 0%, var(--gold-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rozha One', serif;
+  font-size: 20px;
+  color: #0b0d14;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+  border: 1px solid #fde68a;
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #fff, var(--gold-glow), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.brand-sub {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Thaat Swara Ribbon (Interactive scale badges) */
+.thaat-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.thaat-ribbon-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.swara-chip {
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-family: 'Yatra One', sans-serif;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.swara-chip.active {
+  background: linear-gradient(135deg, var(--gold-glow), var(--gold-dark));
+  color: #0b0d14;
+  font-weight: bold;
+  border-color: #fef08a;
+  transform: scale(1.15);
+  box-shadow: 0 0 14px var(--gold-primary);
+}
+
+/* Floating Master Control Deck (Left Side) */
+.control-deck {
+  position: absolute;
+  top: 72px;
+  left: 16px;
+  width: 270px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 158, 11, 0.3) transparent;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 20;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--panel-border), transparent);
+}
+
+.control-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -70,152 +223,156 @@ html, body {
 
 .control-label {
   font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #f59e0b;
-  font-weight: 600;
-  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  color: #cbd5e1;
+  font-weight: 500;
 }
 
-.app-select, .app-btn {
-  background: rgba(18, 20, 29, 0.88);
-  color: #fcd34d;
-  border: 1px solid rgba(245, 158, 11, 0.35);
+.deck-select, .deck-btn {
+  width: 100%;
+  background: rgba(20, 24, 38, 0.9);
+  color: var(--amber-light);
+  border: 1px solid var(--panel-border);
   border-radius: 6px;
   font-family: 'Outfit', sans-serif;
   font-size: 13px;
   font-weight: 500;
   padding: 6px 10px;
-  backdrop-filter: blur(8px);
   outline: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.app-select:hover, .app-btn:hover {
-  border-color: #f59e0b;
-  background: rgba(28, 32, 48, 0.95);
+.deck-select:hover, .deck-btn:hover {
+  border-color: var(--gold-primary);
+  background: rgba(30, 36, 56, 0.95);
   box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 
-.app-select:focus {
-  border-color: #fbbf24;
+.deck-select:focus {
+  border-color: var(--gold-glow);
 }
 
-.app-select option {
-  background: #111422;
-  color: #fcd34d;
+.deck-select option {
+  background: #0f121d;
+  color: var(--amber-light);
 }
 
-/* Tanpura Section */
-.tanpura-box {
-  background: rgba(16, 18, 28, 0.85);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+/* Tanpura Studio Card */
+.tanpura-studio {
+  background: rgba(20, 24, 38, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.25);
   border-radius: 8px;
-  padding: 8px 10px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  backdrop-filter: blur(8px);
-}
-
-.tanpura-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
 
-.tanpura-toggle-btn {
-  flex: 1;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: 600;
+.tanpura-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tanpura-switch {
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
   border-radius: 4px;
   border: 1px solid rgba(245, 158, 11, 0.4);
-  background: rgba(25, 28, 40, 0.9);
+  background: rgba(30, 35, 50, 0.8);
   color: #94a3b8;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.tanpura-toggle-btn.active {
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #fff;
-  border-color: #f59e0b;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+.tanpura-switch.active {
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+  color: #0b0d14;
+  border-color: var(--gold-glow);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
 }
 
-.tanpura-slider {
+/* Visual 4-String Tanpura Animation */
+.tanpura-strings-visual {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 24px;
+  background: rgba(10, 12, 18, 0.6);
+  border-radius: 4px;
+  padding: 0 8px;
+}
+
+.tanpura-wire {
+  width: 20%;
+  height: 2px;
+  background: rgba(245, 158, 11, 0.3);
+  border-radius: 2px;
+  position: relative;
+  transition: all 0.15s ease-out;
+}
+
+.tanpura-wire.plucked {
+  height: 5px;
+  background: #fff;
+  box-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--gold-primary);
+  transform: translateY(-2px);
+}
+
+.deck-slider {
   width: 100%;
-  accent-color: #f59e0b;
+  accent-color: var(--gold-primary);
   height: 4px;
 }
 
-/* Guide Button & Container */
-#guideToggle {
-  align-self: flex-start;
-}
-
+/* Mudra Guide Panel */
 #gestureGuide {
   position: absolute;
-  top: 14px;
-  left: 285px;
+  top: 72px;
+  left: 298px;
+  width: 250px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  z-index: 10;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: rgba(15, 17, 26, 0.92);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-  min-width: 200px;
-  transition: opacity 0.2s, transform 0.2s;
+  gap: 8px;
+  z-index: 20;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6);
 }
 
 #gestureGuide.hidden {
   display: none;
 }
 
-.gesture-guide-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #f59e0b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
-  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-  padding-bottom: 4px;
-}
-
-.gesture-guide-row {
+.guide-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.gesture-guide-swara {
-  color: #fcd34d;
-  font-weight: 600;
+.guide-row:last-child {
+  border-bottom: none;
+}
+
+.guide-swara {
   font-family: 'Yatra One', sans-serif;
   font-size: 15px;
+  color: var(--gold-glow);
 }
 
-.gesture-guide-note {
-  color: #94a3b8;
-  font-size: 11px;
+.guide-mudra {
+  font-size: 12px;
+  color: #cbd5e1;
 }
 
-.gesture-guide-gesture {
-  font-size: 16px;
-}
-
-/* Central Swara HUD */
+/* Master HUD Center (The Swara Sanctum) */
 #hudContainer {
   position: absolute;
   bottom: 24px;
@@ -225,115 +382,187 @@ html, body {
   flex-direction: column;
   align-items: center;
   pointer-events: none;
-  z-index: 5;
+  z-index: 10;
   text-align: center;
+}
+
+.swara-pedestal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #swaraDevanagari {
   font-family: 'Yatra One', sans-serif;
-  font-size: 68px;
+  font-size: 80px;
   line-height: 1;
-  color: #fbbf24;
-  text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 40px rgba(245, 158, 11, 0.4);
-  letter-spacing: 0.02em;
-  transition: transform 0.1s ease;
+  color: #fde68a;
+  text-shadow: 0 0 25px rgba(245, 158, 11, 0.9), 0 0 60px rgba(245, 158, 11, 0.5);
+  letter-spacing: 0.03em;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 #chordDisplay {
   font-family: 'Cinzel', serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  color: #fcd34d;
-  margin-top: 4px;
-  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
-  letter-spacing: 0.05em;
+  color: var(--gold-glow);
+  margin-top: 2px;
+  text-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+  letter-spacing: 0.06em;
 }
 
-#qualityDisplay {
-  font-size: 13px;
-  font-weight: 500;
-  color: #cbd5e1;
-  margin-top: 2px;
-  letter-spacing: 0.06em;
-  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+.hud-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
 }
 
 #saptakIndicator {
-  display: inline-block;
   font-size: 11px;
-  padding: 2px 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
   border-radius: 12px;
-  background: rgba(245, 158, 11, 0.2);
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: #fde68a;
-  margin-top: 4px;
+  backdrop-filter: blur(8px);
 }
 
-/* Volume Meter */
+#qualityDisplay {
+  font-size: 12px;
+  font-weight: 500;
+  color: #e2e8f0;
+  letter-spacing: 0.05em;
+  background: rgba(15, 18, 28, 0.7);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Meend / Pitch Bend Radial Arc Meter */
+.meend-gauge-box {
+  position: absolute;
+  top: 72px;
+  right: 16px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 20;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.meend-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+}
+
+.meend-bar-track {
+  width: 100px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.meend-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-glow));
+  border-radius: 3px;
+  transition: width 0.06s ease, left 0.06s ease;
+}
+
+#distortionDisplay {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-glow);
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+/* Vertical LED Volume Meter */
 #volumeMeter {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 155px;
+  right: 16px;
   display: flex;
   flex-direction: column-reverse;
   gap: 3px;
+  z-index: 20;
   pointer-events: none;
-  z-index: 10;
 }
+
 .vol-bar {
-  width: 60px;
-  height: 7px;
-  background: rgba(30, 34, 48, 0.85);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  width: 50px;
+  height: 6px;
+  background: rgba(25, 30, 45, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.15);
   border-radius: 2px;
-  transition: background 0.08s;
+  transition: background 0.06s;
 }
+
 .vol-bar.lit {
-  background: #f59e0b;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
-  border-color: #fbbf24;
+  background: var(--gold-primary);
+  border-color: var(--gold-glow);
+  box-shadow: 0 0 8px var(--gold-primary);
 }
 
-/* Meend / Filter Display */
-#distortionDisplay {
+/* Floating Action Buttons */
+.hud-actions {
   position: absolute;
-  top: 100px;
-  right: 14px;
-  color: #fcd34d;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: right;
-  pointer-events: none;
-  z-index: 10;
-  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  bottom: 18px;
+  left: 18px;
+  display: flex;
+  gap: 10px;
+  z-index: 30;
 }
 
-/* Help Button & Modal */
-#helpButton {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  width: 40px;
-  height: 40px;
+.action-circle-btn {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(245, 158, 11, 0.5);
-  background: rgba(18, 20, 30, 0.9);
-  color: #fcd34d;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--gold-glow);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 20;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#helpButton:hover {
-  background: #f59e0b;
-  color: #111;
-  box-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
+.action-circle-btn:hover {
+  background: var(--gold-primary);
+  color: #0b0d14;
+  border-color: var(--gold-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px var(--gold-primary);
 }
 
+/* Documentation / Help Modal */
 #helpModal.hidden {
   display: none;
 }
@@ -341,108 +570,110 @@ html, body {
 #helpModal {
   position: fixed;
   inset: 0;
-  background: rgba(6, 8, 14, 0.85);
+  background: rgba(5, 7, 12, 0.88);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
-  backdrop-filter: blur(6px);
+  z-index: 100;
+  backdrop-filter: blur(10px);
 }
 
 .help-content {
-  background: #111422;
+  background: #0f121d;
   color: #e2e8f0;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  border-radius: 12px;
-  width: min(580px, 92vw);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  width: min(620px, 92vw);
   max-height: 85vh;
   overflow-y: auto;
-  padding: 26px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+  padding: 30px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
 }
 
 #closeHelp {
   float: right;
   background: none;
   border: none;
-  color: #f59e0b;
-  font-size: 22px;
+  color: var(--gold-primary);
+  font-size: 24px;
   cursor: pointer;
 }
 
 .help-content h2 {
   font-family: 'Cinzel', serif;
-  color: #f59e0b;
+  color: var(--gold-glow);
   margin-top: 0;
+  letter-spacing: 0.08em;
 }
 
 .help-content h3 {
-  color: #fbbf24;
-  margin-top: 18px;
+  color: var(--gold-primary);
+  margin-top: 22px;
   border-bottom: 1px solid rgba(245, 158, 11, 0.2);
   padding-bottom: 4px;
+  font-size: 16px;
 }
 
 .help-content p {
-  line-height: 1.5;
+  line-height: 1.6;
   font-size: 14px;
   color: #cbd5e1;
 }
 
 .help-content b {
-  color: #fde68a;
+  color: #fef08a;
 }
 
-.help-content a {
-  color: #f59e0b;
-  text-decoration: none;
-}
-
-/* Start Overlay */
+/* Start Audio Overlay */
 #startOverlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(16, 20, 32, 0.85) 0%, rgba(6, 8, 14, 0.96) 100%);
+  background: radial-gradient(circle at center, rgba(15, 18, 30, 0.92) 0%, rgba(5, 7, 12, 0.98) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 24px;
   cursor: pointer;
-  z-index: 100;
-  box-sizing: border-box;
+  z-index: 200;
 }
 
 .start-circle {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: radial-gradient(circle, var(--gold-glow), var(--gold-dark));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  color: #111;
-  box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 34px;
+  color: #0b0d14;
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.7);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
 }
 
 #startOverlay:hover .start-circle {
-  transform: scale(1.08);
-  box-shadow: 0 0 45px rgba(245, 158, 11, 0.9);
+  transform: scale(1.12);
+  box-shadow: 0 0 55px rgba(245, 158, 11, 1);
 }
 
-.start-text {
-  color: #f8fafc;
-  font-size: 18px;
-  letter-spacing: 0.04em;
+.start-title {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #fff, var(--gold-glow), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
 }
 
 .start-subtitle {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 4px;
 }
 </style>
 </head>
@@ -451,21 +682,44 @@ html, body {
   <video id="webcam" autoplay playsinline muted></video>
   <canvas id="overlay" class="dimmed"></canvas>
 
-  <!-- Left Control Panel -->
-  <div class="control-panel">
-    <!-- Music Mode Toggle -->
-    <div class="control-group">
-      <span class="control-label">System Mode</span>
-      <select id="modeSelect" class="app-select">
-        <option value="indian" selected>Indian Classical (Swaras)</option>
-        <option value="western">Western Chords (Original)</option>
+  <!-- Top Regal Brand Banner -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-crest">ॐ</div>
+      <div class="brand-titles">
+        <div class="brand-title">NAADA • नाद</div>
+        <div class="brand-sub">Indian Classical Gesture Synth</div>
+      </div>
+    </div>
+
+    <!-- Active Thaat Swaras Ribbon -->
+    <div class="thaat-ribbon" id="thaatRibbon">
+      <span class="thaat-ribbon-label" id="ribbonThaatName">Bilawal</span>
+      <div class="swara-chip" data-swara="S">सा</div>
+      <div class="swara-chip" data-swara="R">रे</div>
+      <div class="swara-chip" data-swara="G">ग</div>
+      <div class="swara-chip" data-swara="m">म</div>
+      <div class="swara-chip" data-swara="P">प</div>
+      <div class="swara-chip" data-swara="D">ध</div>
+      <div class="swara-chip" data-swara="N">नि</div>
+    </div>
+  </header>
+
+  <!-- Left Control Deck -->
+  <aside class="control-deck" id="controlDeck">
+    <!-- System Mode -->
+    <div class="control-item">
+      <span class="section-title">Music Framework</span>
+      <select id="modeSelect" class="deck-select">
+        <option value="indian" selected>Indian Classical (Swaras & Thaats)</option>
+        <option value="western">Western Harmony (Chords & Voicing)</option>
       </select>
     </div>
 
-    <!-- Thaat Selection (Active in Indian Mode) -->
-    <div class="control-group" id="thaatGroup">
-      <span class="control-label">Thaat (Parent Scale)</span>
-      <select id="thaatSelect" class="app-select">
+    <!-- Thaat Selection -->
+    <div class="control-item" id="thaatGroup">
+      <span class="section-title">Thaat (Parent Scale)</span>
+      <select id="thaatSelect" class="deck-select">
         <option value="bilawal" selected>Bilawal (बिलावल)</option>
         <option value="kalyan">Kalyan / Yaman (कल्याण)</option>
         <option value="khamaj">Khamaj (खमाज)</option>
@@ -479,10 +733,10 @@ html, body {
       </select>
     </div>
 
-    <!-- Tonic / Sur Key Selection -->
-    <div class="control-group">
-      <span class="control-label">Base Sur (Sa / Key)</span>
-      <select id="keySelect" class="app-select">
+    <!-- Base Sur (Tonic Sa) -->
+    <div class="control-item">
+      <span class="section-title">Sur / Tonic (Sa)</span>
+      <select id="keySelect" class="deck-select">
         <option value="138.59" data-note="Db" selected>C# / Db (काली 1 - 138 Hz)</option>
         <option value="146.83" data-note="D">D (सफ़ेद 2 - 147 Hz)</option>
         <option value="155.56" data-note="Eb">D# / Eb (काली 2 - 156 Hz)</option>
@@ -498,19 +752,19 @@ html, body {
       </select>
     </div>
 
-    <!-- Tuning System -->
-    <div class="control-group" id="tuningGroup">
-      <span class="control-label">Microtonal Tuning</span>
-      <select id="tuningSelect" class="app-select">
+    <!-- Microtonal Tuning -->
+    <div class="control-item" id="tuningGroup">
+      <span class="section-title">Acoustic Tuning</span>
+      <select id="tuningSelect" class="deck-select">
         <option value="shruti" selected>22 Shrutis (Just Intonation)</option>
         <option value="equal">12-TET (Equal Temperament)</option>
       </select>
     </div>
 
-    <!-- Timbre / Instrument Waveform -->
-    <div class="control-group">
-      <span class="control-label">Sound Timbre</span>
-      <select id="toneSelect" class="app-select">
+    <!-- Instrument Timbre -->
+    <div class="control-item">
+      <span class="section-title">Instrument Timbre</span>
+      <select id="toneSelect" class="deck-select">
         <option value="bansuri" selected>Bansuri (Bamboo Flute)</option>
         <option value="sitar">Sitar (Resonant Pluck)</option>
         <option value="harmonium">Harmonium (Reed Organ)</option>
@@ -519,38 +773,61 @@ html, body {
       </select>
     </div>
 
-    <!-- Tanpura Drone Controls -->
-    <div class="tanpura-box">
-      <div class="tanpura-row">
-        <span class="control-label">Tanpura Drone</span>
-        <button id="tanpuraToggle" class="tanpura-toggle-btn active">ON</button>
+    <!-- Tanpura Studio -->
+    <div class="tanpura-studio">
+      <div class="tanpura-header">
+        <span class="section-title" style="margin-bottom:0;">Tanpura Studio</span>
+        <button id="tanpuraToggle" class="tanpura-switch active">ON</button>
       </div>
-      <div class="tanpura-row">
-        <span style="font-size: 11px; color: #94a3b8;">1st String:</span>
-        <select id="tanpuraStringSelect" class="app-select" style="padding: 2px 6px; font-size: 11px;">
+
+      <!-- 4 Visual Strings that pulse when plucked -->
+      <div class="tanpura-strings-visual">
+        <div class="tanpura-wire" id="wire0" title="String 1: Pa/Ma/Ni"></div>
+        <div class="tanpura-wire" id="wire1" title="String 2: Madhya Sa"></div>
+        <div class="tanpura-wire" id="wire2" title="String 3: Jodi Sa"></div>
+        <div class="tanpura-wire" id="wire3" title="String 4: Kharaj Sa"></div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+        <span style="font-size:11px; color:#cbd5e1;">1st String:</span>
+        <select id="tanpuraStringSelect" class="deck-select" style="padding:2px 6px; font-size:11px; width:auto;">
           <option value="P" selected>Pa (पancham)</option>
           <option value="m">Ma (Madhyam)</option>
           <option value="N">Ni (Nishad)</option>
         </select>
       </div>
-      <input type="range" id="tanpuraVolume" class="tanpura-slider" min="0" max="1" step="0.05" value="0.65" title="Tanpura Volume">
+
+      <input type="range" id="tanpuraVolume" class="deck-slider" min="0" max="1" step="0.05" value="0.65" title="Tanpura Volume">
     </div>
 
-    <button id="guideToggle" class="app-btn">Mudra Guide</button>
-  </div>
+    <button id="guideToggle" class="deck-btn">Show Mudra Guide</button>
+  </aside>
 
-  <!-- Dynamic Swara Mudra Guide -->
+  <!-- Mudra Guide Panel -->
   <div id="gestureGuide" class="hidden">
-    <div class="gesture-guide-title">Swara Mudras</div>
+    <span class="section-title">Swara Mudras</span>
     <div id="guideContent"></div>
   </div>
 
-  <!-- Center Dynamic HUD -->
+  <!-- Central Swara Sanctum HUD -->
   <div id="hudContainer">
-    <div id="swaraDevanagari">--</div>
-    <div id="chordDisplay">--</div>
-    <div id="qualityDisplay">--</div>
-    <div id="saptakIndicator">Madhya Saptak</div>
+    <div class="swara-pedestal">
+      <div id="swaraDevanagari">--</div>
+      <div id="chordDisplay">--</div>
+    </div>
+    <div class="hud-details">
+      <div id="saptakIndicator">Madhya Saptak</div>
+      <div id="qualityDisplay">Solo Swara</div>
+    </div>
+  </div>
+
+  <!-- Meend / Microtonal Pitch Bend Gauge (Right Side) -->
+  <div class="meend-gauge-box">
+    <div class="meend-title">Meend / Gamaka</div>
+    <div class="meend-bar-track">
+      <div class="meend-bar-fill" id="meendFill"></div>
+    </div>
+    <div id="distortionDisplay">0¢</div>
   </div>
 
   <!-- Volume LED Meter (Right Side) -->
@@ -565,19 +842,19 @@ html, body {
     <div class="vol-bar" data-index="0"></div>
   </div>
 
-  <div id="distortionDisplay">Meend: 0¢</div>
+  <!-- Floating Action Buttons (Help) -->
+  <div class="hud-actions">
+    <button id="helpButton" class="action-circle-btn" title="Instrument Guide">?</button>
+  </div>
 
-  <!-- Help Button -->
-  <button id="helpButton">?</button>
-
-  <!-- Help & Documentation Modal -->
+  <!-- Help & Comprehensive Documentation Modal -->
   <div id="helpModal" class="hidden">
     <div class="help-content">
       <button id="closeHelp">✕</button>
 
-      <h2>Indian Classical Gesture Synth</h2>
+      <h2>NAADA • Instrument Guide</h2>
       <p>
-        An expressive camera-controlled instrument bridging Indian Classical Music (Swaras, Thaats, Meend, Tanpura) with computer vision and Web Audio synthesis.
+        An expressive camera-controlled synthesis instrument uniting Indian Classical Music (Swaras, Thaats, Meend, Tanpura) with computer vision and Web Audio.
       </p>
 
       <h3>Left Hand: Swara & Mudra Selection</h3>
@@ -591,41 +868,39 @@ html, body {
         <b>Index + Pinky + Thumb:</b> Ni (नि)
       </p>
       <p>
-        <b>Wrist Horizontal Tilt:</b><br>
+        <b>Horizontal Wrist Tilt:</b><br>
         • Neutral / Inward: <b>Shuddha</b> (or Teevra for Ma)<br>
         • Outward: <b>Komal</b> (flat) (or Shuddha Ma in Teevra Thaats)<br>
-        <i>Note: When resting neutral, Swaras automatically conform to the active Thaat!</i>
+        <i>When resting neutral, notes automatically conform to your active Thaat!</i>
       </p>
 
       <h3>Right Hand: Expression, Meend & Saptak</h3>
       <p>
-        <b>Wrist Height:</b> Controls volume / Swara Prana (Higher = Louder, Lower = Softer).<br>
-        <b>Wrist Horizontal Tilt:</b> Continuous <b>Meend / Gamaka</b> microtonal pitch glide (±100 cents) for authentic vocal/sitar portamento!<br>
-        <b>Thumb Extended:</b> Drops to <b>Mandra Saptak</b> (Lower octave).<br>
-        <b>Elevated Hand:</b> Ascends to <b>Tar Saptak</b> (Higher octave).
+        <b>Vertical Height:</b> Controls volume & acoustic breath (Higher = Louder, Lower = Softer).<br>
+        <b>Horizontal Wrist Tilt:</b> Continuous <b>Meend / Gamaka</b> microtonal pitch glide (±100 cents) for authentic vocal/sitar portamento!<br>
+        <b>Thumb Extended:</b> Drops to <b>Mandra Saptak</b> (lower octave).<br>
+        <b>Elevated Hand (above shoulder):</b> Ascends to <b>Tar Saptak</b> (higher octave).
       </p>
       <p>
-        <b>Right Hand Fingers (Polyphony Mode):</b><br>
+        <b>Right Hand Fingers (Voicing & Accompaniment):</b><br>
         • 1 Finger: Solo Melodic Swara with fluid Meend portamento<br>
         • 2 Fingers: Swara + Sa drone harmony<br>
         • 3 Fingers: Swara + Sa + Pa accompaniment<br>
         • 4 Fingers: Swarmandal resonant chord cascade
       </p>
 
-      <h3>4-String Tanpura Drone</h3>
+      <h3>4-String Tanpura Studio</h3>
       <p>
-        Synthesizes a continuous, meditative acoustic Tanpura with authentic harmonic <i>Jwari</i> buzz. Choose first string tuning (Pa, Ma, or Ni) to match your Raga.
+        Synthesizes a continuous, meditative acoustic Tanpura with harmonic <i>Jwari</i> buzz. The 4 visual wires in the deck vibrate whenever each string is plucked.
       </p>
     </div>
   </div>
 
-  <!-- Audio unlock overlay -->
+  <!-- Audio Unlock Overlay -->
   <div id="startOverlay">
     <div class="start-circle">▶</div>
-    <div class="start-text">
-      Click to Enable Audio
-      <div class="start-subtitle">Indian Classical Gesture Synth • MediaPipe Vision</div>
-    </div>
+    <div class="start-title">NAADA • नाद</div>
+    <div class="start-subtitle">Click anywhere to begin your musical journey</div>
   </div>
 </div>
 

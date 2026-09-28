@@ -12,9 +12,19 @@ const keySelectEl = document.getElementById("keySelect");
 const tuningSelectEl = document.getElementById("tuningSelect");
 const toneSelectEl = document.getElementById("toneSelect");
 
+const thaatRibbonEl = document.getElementById("thaatRibbon");
+const ribbonThaatNameEl = document.getElementById("ribbonThaatName");
+const swaraChipEls = Array.from(document.querySelectorAll(".swara-chip"));
+
 const tanpuraToggleEl = document.getElementById("tanpuraToggle");
 const tanpuraStringSelectEl = document.getElementById("tanpuraStringSelect");
 const tanpuraVolumeEl = document.getElementById("tanpuraVolume");
+const tanpuraWireEls = [
+  document.getElementById("wire0"),
+  document.getElementById("wire1"),
+  document.getElementById("wire2"),
+  document.getElementById("wire3")
+];
 
 const guideToggleEl = document.getElementById("guideToggle");
 const gestureGuideEl = document.getElementById("gestureGuide");
@@ -25,8 +35,9 @@ const chordDisplayEl = document.getElementById("chordDisplay");
 const qualityDisplayEl = document.getElementById("qualityDisplay");
 const saptakIndicatorEl = document.getElementById("saptakIndicator");
 
-const volumeBarEls = Array.from(document.querySelectorAll(".vol-bar"));
+const meendFillEl = document.getElementById("meendFill");
 const distortionDisplayEl = document.getElementById("distortionDisplay");
+const volumeBarEls = Array.from(document.querySelectorAll(".vol-bar"));
 const startOverlayEl = document.getElementById("startOverlay");
 
 const helpButton = document.getElementById("helpButton");
@@ -41,18 +52,18 @@ function trackClarityEvent(eventName) {
 
 // ---- Indian Classical Music Definitions ----
 const SWARAS = {
-  S: { code: "S", hindi: "सा", name: "Sa", full: "Shadja", degree: 1, type: "achala" },
-  r: { code: "r", hindi: "रे॒", name: "Komal Re", full: "Komal Rishabh", degree: 2, type: "komal" },
-  R: { code: "R", hindi: "रे", name: "Shuddha Re", full: "Shuddha Rishabh", degree: 2, type: "shuddha" },
-  g: { code: "g", hindi: "ग॒", name: "Komal Ga", full: "Komal Gandhar", degree: 3, type: "komal" },
-  G: { code: "G", hindi: "ग", name: "Shuddha Ga", full: "Shuddha Gandhar", degree: 3, type: "shuddha" },
-  m: { code: "m", hindi: "म", name: "Shuddha Ma", full: "Shuddha Madhyam", degree: 4, type: "shuddha" },
-  M: { code: "M", hindi: "म॑", name: "Teevra Ma", full: "Teevra Madhyam", degree: 4, type: "teevra" },
-  P: { code: "P", hindi: "प", name: "Pa", full: "Pancham", degree: 5, type: "achala" },
-  d: { code: "d", hindi: "ध॒", name: "Komal Dha", full: "Komal Dhaivat", degree: 6, type: "komal" },
-  D: { code: "D", hindi: "ध", name: "Shuddha Dha", full: "Shuddha Dhaivat", degree: 6, type: "shuddha" },
-  n: { code: "n", hindi: "नि॒", name: "Komal Ni", full: "Komal Nishad", degree: 7, type: "komal" },
-  N: { code: "N", hindi: "नि", name: "Shuddha Ni", full: "Shuddha Nishad", degree: 7, type: "shuddha" }
+  S: { code: "S", hindi: "सा", name: "Sa", full: "Shadja", degree: 1, type: "achala", color: "245, 158, 11" },
+  r: { code: "r", hindi: "रे॒", name: "Komal Re", full: "Komal Rishabh", degree: 2, type: "komal", color: "239, 68, 68" },
+  R: { code: "R", hindi: "रे", name: "Shuddha Re", full: "Shuddha Rishabh", degree: 2, type: "shuddha", color: "249, 115, 22" },
+  g: { code: "g", hindi: "ग॒", name: "Komal Ga", full: "Komal Gandhar", degree: 3, type: "komal", color: "236, 72, 153" },
+  G: { code: "G", hindi: "ग", name: "Shuddha Ga", full: "Shuddha Gandhar", degree: 3, type: "shuddha", color: "217, 70, 239" },
+  m: { code: "m", hindi: "म", name: "Shuddha Ma", full: "Shuddha Madhyam", degree: 4, type: "shuddha", color: "16, 185, 129" },
+  M: { code: "M", hindi: "म॑", name: "Teevra Ma", full: "Teevra Madhyam", degree: 4, type: "teevra", color: "6, 182, 212" },
+  P: { code: "P", hindi: "प", name: "Pa", full: "Pancham", degree: 5, type: "achala", color: "245, 158, 11" },
+  d: { code: "d", hindi: "ध॒", name: "Komal Dha", full: "Komal Dhaivat", degree: 6, type: "komal", color: "139, 92, 246" },
+  D: { code: "D", hindi: "ध", name: "Shuddha Dha", full: "Shuddha Dhaivat", degree: 6, type: "shuddha", color: "99, 102, 241" },
+  n: { code: "n", hindi: "नि॒", name: "Komal Ni", full: "Komal Nishad", degree: 7, type: "komal", color: "59, 130, 246" },
+  N: { code: "N", hindi: "नि", name: "Shuddha Ni", full: "Shuddha Nishad", degree: 7, type: "shuddha", color: "14, 165, 233" }
 };
 
 // 10 Parent Thaats (Hindustani)
@@ -90,7 +101,7 @@ const EQUAL_SEMITONES = {
   S: 0, r: 1, R: 2, g: 3, G: 4, m: 5, M: 6, P: 7, d: 8, D: 9, n: 10, N: 11
 };
 
-// Western Major Scale Reference for backward compatibility
+// Western Scale Reference for backward compatibility
 const MAJOR_SCALE = {
   A:  ["A","B","C#","D","E","F#","G#"],
   Bb: ["Bb","C","D","Eb","F","G","A"],
@@ -110,15 +121,18 @@ const DEGREE_SEMITONES = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: -1 };
 const NUMERAL_TO_DEGREE = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7 };
 
 // State Variables
-let currentMode = "indian"; // "indian" or "western"
+let currentMode = "indian";
 let currentThaatKey = "bilawal";
 let currentTonicFreq = Number(keySelectEl.value);
 let currentKeyName = keySelectEl.selectedOptions[0].dataset.note;
-let currentTuning = "shruti"; // "shruti" or "equal"
+let currentTuning = "shruti";
 let currentTimbre = "bansuri";
 let isTanpuraActive = true;
 let tanpuraFirstString = "P";
 let tanpuraVolume = 0.65;
+
+// Ripple Wave Effect for Tanpura plucks
+let tanpuraRipples = [];
 
 // ---- Finger Landmark Indices ----
 const FINGERS = {
@@ -170,7 +184,7 @@ function getHandHorizontalTilt(landmarks, handedness) {
   }
 }
 
-// ---- Indian Classical Swara Classifier (Left Hand) ----
+// Left Hand Swara Classifier
 function classifySwara(landmarks, handedness, thaatKey) {
   const thumb = isThumbExtended(landmarks, handedness);
   const index = isFingerExtended(landmarks, "index");
@@ -182,14 +196,12 @@ function classifySwara(landmarks, handedness, thaatKey) {
   const activeThaat = THAATS[thaatKey] || THAATS.bilawal;
   const thaatSwaras = activeThaat.swaras;
 
-  // Gesture 6: Index + Pinky (Dhaivat / 6th)
   if (index && pinky && !middle && !ring && !thumb) {
     if (tilt > 0.25) return "D";
     if (tilt < -0.25) return "d";
-    return thaatSwaras[5]; // Default to Thaat
+    return thaatSwaras[5];
   }
 
-  // Gesture 7: Index + Pinky + Thumb (Nishad / 7th)
   if (index && pinky && !middle && !ring && thumb) {
     if (tilt > 0.25) return "N";
     if (tilt < -0.25) return "n";
@@ -200,34 +212,24 @@ function classifySwara(landmarks, handedness, thaatKey) {
 
   switch (fingerCount) {
     case 1:
-      return "S"; // Sa (Shadja)
+      return "S";
     case 2:
-      // Re (Rishabh)
       if (tilt > 0.25) return "R";
       if (tilt < -0.25) return "r";
       return thaatSwaras[1];
     case 3:
-      // Ga (Gandhar)
       if (tilt > 0.25) return "G";
       if (tilt < -0.25) return "g";
       return thaatSwaras[2];
     case 4:
-      // Ma (Madhyam)
-      if (tilt > 0.25) return "M"; // Outward tilt = Teevra Ma
-      if (tilt < -0.25) return "m"; // Inward tilt = Shuddha Ma
+      if (tilt > 0.25) return "M";
+      if (tilt < -0.25) return "m";
       return thaatSwaras[3];
     case 5:
-      return "P"; // Pa (Pancham, Achala)
+      return "P";
     default:
       return null;
   }
-}
-
-// Western Chord Quality for backward compatibility
-function getChordQuality(landmarks) {
-  const wrist = landmarks[0];
-  const middleMcp = landmarks[9];
-  return middleMcp.x > wrist.x ? "minor" : "major";
 }
 
 function classifyWesternChord(landmarks, handedness) {
@@ -237,25 +239,24 @@ function classifyWesternChord(landmarks, handedness) {
   const ring = isFingerExtended(landmarks, "ring");
   const pinky = isFingerExtended(landmarks, "pinky");
 
-  const quality = getChordQuality(landmarks);
+  const wrist = landmarks[0];
+  const middleMcp = landmarks[9];
+  const isMinor = middleMcp.x > wrist.x;
 
   if (index && pinky && !middle && !ring && !thumb) {
-    return quality === "major" ? "VI" : "vi";
+    return isMinor ? "vi" : "VI";
   }
-
   if (index && pinky && !middle && !ring && thumb) {
-    return quality === "major" ? "VII" : "vii";
+    return isMinor ? "vii" : "VII";
   }
 
   const count = [thumb, index, middle, ring, pinky].filter(Boolean).length;
   const ROMAN = { 1: "I", 2: "II", 3: "III", 4: "IV", 5: "V" };
   const base = ROMAN[count];
   if (!base) return null;
-
-  return quality === "major" ? base : base.toLowerCase();
+  return isMinor ? base.toLowerCase() : base;
 }
 
-// Right Hand Expression & Controls
 function getVolumeFromHeight(landmarks) {
   const wrist = landmarks[0];
   const TOP = 0.08;
@@ -276,15 +277,13 @@ function getRightHandQualityIndex(landmarks) {
 function getSaptak(landmarks, handedness) {
   const thumbOut = isThumbExtended(landmarks, handedness);
   const wrist = landmarks[0];
-  if (thumbOut) return "mandra"; // Lower octave
-  if (wrist && wrist.y < 0.22) return "tar"; // Higher octave
-  return "madhya"; // Middle octave
+  if (thumbOut) return "mandra";
+  if (wrist && wrist.y < 0.22) return "tar";
+  return "madhya";
 }
 
-// ---- Calculation of Swara Frequencies ----
 function getSwaraFrequency(swaraCode, saptak = "madhya", meendCents = 0) {
   let baseFreq = currentTonicFreq;
-  // Standardize tonic into central pitch range
   while (baseFreq < 130) baseFreq *= 2;
   while (baseFreq > 280) baseFreq /= 2;
 
@@ -297,27 +296,23 @@ function getSwaraFrequency(swaraCode, saptak = "madhya", meendCents = 0) {
   }
 
   let freq = baseFreq * ratio;
-
-  // Saptak multiplier
   if (saptak === "mandra") freq *= 0.5;
   if (saptak === "tar") freq *= 2.0;
 
-  // Meend (Continuous Microtonal Pitch Glide)
   if (meendCents !== 0) {
     freq *= Math.pow(2, meendCents / 1200);
   }
-
   return freq;
 }
 
-// ---- Algorithmic 4-String Tanpura Synthesizer ----
+// ---- Algorithmic 4-String Tanpura Engine ----
 class TanpuraEngine {
   constructor() {
     this.ctx = null;
     this.masterGain = null;
     this.timerId = null;
     this.stringStep = 0;
-    this.pluckIntervalMs = 1350; // Meditative tempo
+    this.pluckIntervalMs = 1350;
   }
 
   init(audioCtx) {
@@ -357,30 +352,36 @@ class TanpuraEngine {
   pluckString(step) {
     if (!this.ctx || !isTanpuraActive) return;
 
+    // Trigger visual string vibration in HUD
+    const wireEl = tanpuraWireEls[step];
+    if (wireEl) {
+      wireEl.classList.add("plucked");
+      setTimeout(() => wireEl.classList.remove("plucked"), 300);
+    }
+
+    // Spawn harmonic ripple on canvas
+    tanpuraRipples.push({
+      radius: 20,
+      maxRadius: 280,
+      opacity: 0.7,
+      step: step
+    });
+
     let baseSa = currentTonicFreq;
     while (baseSa < 130) baseSa *= 2;
     while (baseSa > 280) baseSa /= 2;
 
     let targetFreq;
-    // 4-string cycle:
-    // String 0: First string (Pa, Ma, or Ni in Mandra Saptak)
-    // String 1: Jodi 1 (Madhya Sa)
-    // String 2: Jodi 2 (Madhya Sa with slight acoustic detune)
-    // String 3: Kharaj Sa (Mandra Sa)
     if (step === 0) {
-      if (tanpuraFirstString === "P") {
-        targetFreq = baseSa * 0.75; // Mandra Pa (3/4 of Sa)
-      } else if (tanpuraFirstString === "m") {
-        targetFreq = baseSa * (2 / 3); // Mandra Ma
-      } else {
-        targetFreq = baseSa * (15 / 16); // Mandra Ni
-      }
+      if (tanpuraFirstString === "P") targetFreq = baseSa * 0.75;
+      else if (tanpuraFirstString === "m") targetFreq = baseSa * (2 / 3);
+      else targetFreq = baseSa * (15 / 16);
     } else if (step === 1) {
-      targetFreq = baseSa; // Madhya Sa
+      targetFreq = baseSa;
     } else if (step === 2) {
-      targetFreq = baseSa * 1.0022; // Subtle detuning for Jwari chorusing
+      targetFreq = baseSa * 1.0022; // Micro-detune for Jwari chorusing
     } else {
-      targetFreq = baseSa * 0.5; // Kharaj Sa (Lower octave)
+      targetFreq = baseSa * 0.5; // Kharaj Sa
     }
 
     const now = this.ctx.currentTime;
@@ -388,18 +389,15 @@ class TanpuraEngine {
     const jwariFilter = this.ctx.createBiquadFilter();
     const pluckGain = this.ctx.createGain();
 
-    // Sawtooth blended with acoustic Jwari bridge filter
     osc.type = "sawtooth";
     osc.frequency.setValueAtTime(targetFreq, now);
 
-    // Resonant bandpass filter simulating the curved bone/wood bridge with cotton thread
     jwariFilter.type = "bandpass";
-    jwariFilter.frequency.setValueAtTime(targetFreq * 3.5, now);
-    jwariFilter.Q.setValueAtTime(3.2, now);
+    jwariFilter.frequency.setValueAtTime(targetFreq * 3.6, now);
+    jwariFilter.Q.setValueAtTime(3.4, now);
 
-    // Dynamic pluck envelope: fast attack (15ms), long resonant decay (4.2s)
     pluckGain.gain.setValueAtTime(0, now);
-    pluckGain.gain.linearRampToValueAtTime(0.45, now + 0.02);
+    pluckGain.gain.linearRampToValueAtTime(0.4, now + 0.02);
     pluckGain.gain.exponentialRampToValueAtTime(0.001, now + 4.2);
 
     osc.connect(jwariFilter);
@@ -411,13 +409,15 @@ class TanpuraEngine {
   }
 }
 
-// ---- Main Synth Engine (Bansuri, Sitar, Harmonium, etc.) ----
+// ---- High-Fidelity Synthesizer Engine ----
 class SynthEngine {
   constructor() {
     this.ctx = null;
     this.filter = null;
     this.waveShaper = null;
     this.masterGain = null;
+    this.vibratoOsc = null;
+    this.vibratoGain = null;
     this.oscillators = [];
     this.currentKey = null;
     this.tanpura = new TanpuraEngine();
@@ -428,16 +428,24 @@ class SynthEngine {
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
 
     this.waveShaper = this.ctx.createWaveShaper();
-    this.waveShaper.curve = null;
+    this.waveShaper.curve = this.createSoftDistortionCurve(15);
     this.waveShaper.oversample = "4x";
 
     this.filter = this.ctx.createBiquadFilter();
     this.filter.type = "lowpass";
-    this.filter.frequency.value = 1600;
-    this.filter.Q.value = 1.0;
+    this.filter.frequency.value = 1800;
+    this.filter.Q.value = 1.2;
 
     this.masterGain = this.ctx.createGain();
     this.masterGain.gain.value = 0;
+
+    // Vibrato LFO for authentic Indian vocal/flute Gamaka expression
+    this.vibratoOsc = this.ctx.createOscillator();
+    this.vibratoOsc.frequency.value = 5.2; // 5.2 Hz gentle vibrato
+    this.vibratoGain = this.ctx.createGain();
+    this.vibratoGain.gain.value = 2.5; // subtle frequency modulation
+    this.vibratoOsc.connect(this.vibratoGain);
+    this.vibratoOsc.start();
 
     this.waveShaper.connect(this.filter);
     this.filter.connect(this.masterGain);
@@ -449,6 +457,18 @@ class SynthEngine {
     }
   }
 
+  createSoftDistortionCurve(amount) {
+    const k = typeof amount === "number" ? amount : 15;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI / 180;
+    for (let i = 0; i < n_samples; ++i) {
+      const x = (i * 2) / n_samples - 1;
+      curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
   setVolume(vol01) {
     if (!this.ctx) return;
     const clamped = Math.max(0, Math.min(1, vol01));
@@ -457,16 +477,16 @@ class SynthEngine {
 
   updateFilter(tiltFactor) {
     if (!this.filter || !this.ctx) return;
-    let targetFreq = 1600;
-    let targetQ = 1.0;
+    let targetFreq = 1800;
+    let targetQ = 1.2;
 
     if (tiltFactor < 0) {
       const amt = Math.abs(tiltFactor);
-      targetFreq = 1600 - (amt * 1100);
-      targetQ = 1.0 + (amt * 1.5);
+      targetFreq = 1800 - (amt * 1250);
+      targetQ = 1.2 + (amt * 1.8);
     } else {
-      targetFreq = 1600 + (tiltFactor * 3200);
-      targetQ = 1.0 + (tiltFactor * 3.5);
+      targetFreq = 1800 + (tiltFactor * 3500);
+      targetQ = 1.2 + (tiltFactor * 4.0);
     }
 
     const now = this.ctx.currentTime;
@@ -485,14 +505,10 @@ class SynthEngine {
     const mainFreq = getSwaraFrequency(swaraCode, saptak, meendCents);
     let freqs = [mainFreq];
 
-    // Right-Hand Polyphony / Accompaniment:
-    // 1: Solo Swara
-    // 2: Swara + Sa drone
-    // 3: Swara + Sa + Pa
-    // 4: Swarmandal chord (Sa, Ga/g, Pa, Ni/n)
+    // Right-Hand Polyphony / Voicing
     if (qualityIndex === 2) {
       const saFreq = getSwaraFrequency("S", "madhya", 0);
-      if (Math.abs(mainFreq - saFreq) > 2) freqs.push(saFreq);
+      if (Math.abs(mainFreq - saFreq) > 3) freqs.push(saFreq);
     } else if (qualityIndex === 3) {
       const saFreq = getSwaraFrequency("S", "madhya", 0);
       const paFreq = getSwaraFrequency("P", "mandra", 0);
@@ -515,10 +531,9 @@ class SynthEngine {
   applyOscillators(freqs) {
     const key = freqs.map((f) => f.toFixed(1)).join(",");
     if (key === this.currentKey && this.oscillators.length === freqs.length) {
-      // Smooth frequency updates during Meend / pitch glide
       freqs.forEach((freq, i) => {
         if (this.oscillators[i]) {
-          this.oscillators[i].frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.03);
+          this.oscillators[i].frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.035);
         }
       });
       return;
@@ -528,16 +543,17 @@ class SynthEngine {
 
     this.oscillators = freqs.map((freq) => {
       const osc = this.ctx.createOscillator();
-      
-      // Timbre shaping
+
       if (currentTimbre === "bansuri") {
         osc.type = "triangle";
+        // Connect vibrato LFO to simulate authentic bamboo flute air oscillation
+        if (this.vibratoGain) this.vibratoGain.connect(osc.frequency);
       } else if (currentTimbre === "sitar") {
         osc.type = "sawtooth";
       } else if (currentTimbre === "harmonium") {
         osc.type = "sawtooth";
       } else {
-        osc.type = currentTimbre; // "triangle" or "sawtooth"
+        osc.type = currentTimbre;
       }
 
       osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
@@ -568,9 +584,8 @@ class SynthEngine {
 
 const synth = new SynthEngine();
 let hasPlayedFirstSound = false;
-let lastTrackedChord = null;
 
-// ---- Western Chord Mathematics (for Western Mode) ----
+// Western Chord Mathematics
 function getChordTones(numeralStr, isMajorMode) {
   if (!numeralStr || numeralStr === "--") return null;
   const degree = NUMERAL_TO_DEGREE[numeralStr.toUpperCase()];
@@ -622,113 +637,274 @@ function getSolidNotes(tones, rightHandCount, isMajorMode) {
   }
 }
 
-// ---- UI Update & Dynamic Mudra Guide ----
+// ---- UI Ribbon & Guide Synchronization ----
+function updateThaatRibbon() {
+  const activeThaat = THAATS[currentThaatKey] || THAATS.bilawal;
+  if (ribbonThaatNameEl) {
+    ribbonThaatNameEl.textContent = activeThaat.name;
+  }
+
+  // Update the 7 chips with the Thaat's Swaras
+  swaraChipEls.forEach((chip, idx) => {
+    const swaraCode = activeThaat.swaras[idx];
+    const swara = SWARAS[swaraCode];
+    if (swara) {
+      chip.dataset.swara = swaraCode;
+      chip.textContent = swara.hindi;
+    }
+  });
+}
+
+function highlightActiveSwaraChip(activeSwaraCode) {
+  swaraChipEls.forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.swara === activeSwaraCode);
+  });
+}
+
 function updateGestureGuide() {
   if (!guideContentEl) return;
 
   if (currentMode === "indian") {
     const activeThaat = THAATS[currentThaatKey] || THAATS.bilawal;
     const GESTURES = [
-      { degree: 1, gesture: "☝️ 1 Finger", hint: "Tonic" },
-      { degree: 2, gesture: "✌️ 2 Fingers", hint: "Tilt: Komal / Shuddha" },
-      { degree: 3, gesture: "🤟 3 Fingers", hint: "Tilt: Komal / Shuddha" },
-      { degree: 4, gesture: "🖖 4 Fingers", hint: "Tilt: Shuddha / Teevra" },
-      { degree: 5, gesture: "🖐️ 5 Fingers", hint: "Achala Pa" },
-      { degree: 6, gesture: "🤘 Index + Pinky", hint: "Tilt: Komal / Shuddha" },
-      { degree: 7, gesture: "🤌 Index + Pinky + Thumb", hint: "Tilt: Komal / Shuddha" }
+      { gesture: "☝️ 1 Finger (Sa)", hint: "Tonic" },
+      { gesture: "✌️ 2 Fingers (Re)", hint: "Tilt: Komal / Shuddha" },
+      { gesture: "🤟 3 Fingers (Ga)", hint: "Tilt: Komal / Shuddha" },
+      { gesture: "🖖 4 Fingers (Ma)", hint: "Tilt: Shuddha / Teevra" },
+      { gesture: "🖐️ 5 Fingers (Pa)", hint: "Achala" },
+      { gesture: "🤘 Index + Pinky (Dha)", hint: "Tilt: Komal / Shuddha" },
+      { gesture: "🤌 Index+Pinky+Thumb (Ni)", hint: "Tilt: Komal / Shuddha" }
     ];
 
     guideContentEl.innerHTML = activeThaat.swaras.map((swaraCode, idx) => {
       const swara = SWARAS[swaraCode];
       const g = GESTURES[idx];
       return `
-        <div class="gesture-guide-row">
-          <span class="gesture-guide-swara">${swara.hindi} (${swara.name})</span>
-          <span class="gesture-guide-note">${g.gesture}</span>
+        <div class="guide-row">
+          <span class="guide-swara">${swara.hindi} ${swara.name}</span>
+          <span class="guide-mudra">${g.gesture}</span>
         </div>
       `;
     }).join("");
   } else {
     const GESTURE_GUIDE = [
-      { degree: 1, gesture: "1️⃣" },
-      { degree: 2, gesture: "2️⃣" },
-      { degree: 3, gesture: "3️⃣" },
-      { degree: 4, gesture: "4️⃣" },
-      { degree: 5, gesture: "5️⃣" },
-      { degree: 6, gesture: "🤘" },
-      { degree: 7, gesture: "🤟" }
+      { degree: 1, gesture: "1️⃣ Root" },
+      { degree: 2, gesture: "2️⃣ 2nd" },
+      { degree: 3, gesture: "3️⃣ 3rd" },
+      { degree: 4, gesture: "4️⃣ 4th" },
+      { degree: 5, gesture: "5️⃣ 5th" },
+      { degree: 6, gesture: "🤘 6th" },
+      { degree: 7, gesture: "🤟 7th" }
     ];
     const scale = MAJOR_SCALE[currentKeyName] || MAJOR_SCALE.C;
     guideContentEl.innerHTML = GESTURE_GUIDE.map(({ degree, gesture }) => `
-      <div class="gesture-guide-row">
-        <span class="gesture-guide-swara">${scale[degree - 1]}</span>
-        <span class="gesture-guide-note">${gesture}</span>
+      <div class="guide-row">
+        <span class="guide-swara">${scale[degree - 1]}</span>
+        <span class="guide-mudra">${gesture}</span>
       </div>
     `).join("");
   }
 }
 
-// ---- Visual Energy Wave (Canvas Visualizer) ----
-function drawEnergy(ctx, volume01, qualityIndex, tiltFactor, activeNoteOrSwara) {
+// ---- Sacred Geometric Harmonic Chakra / Mandala Visualizer ----
+function drawChakraMandala(ctx, canvasWidth, canvasHeight, volume01, qualityIndex, tiltFactor, activeItem) {
   if (!ctx) return;
-  const lineCount = Math.max(1, Math.min(4, qualityIndex || 1));
-  const centerY = ctx.canvas.height - 70;
-  const canvasWidth = ctx.canvas.width;
 
-  const maxThickness = 1 + (volume01 * 8);
-  const chaosScale = (tiltFactor + 1) / 2;
-  const shakinessAmp = chaosScale * 22;
-  const shakinessFreq = 0.05 + (chaosScale * 0.12);
+  const centerX = canvasWidth / 2;
+  const centerY = canvasHeight / 2 - 30;
+  const time = performance.now() * 0.001;
 
-  // Colors mapped to Swaras & Scale Degrees
-  const SWARA_COLORS = {
-    S: "245, 158, 11",   // Sa: Golden Sunset
-    r: "239, 68, 68",    // Komal Re: Crimson
-    R: "249, 115, 22",   // Shuddha Re: Tangerine
-    g: "236, 72, 153",   // Komal Ga: Magenta Rose
-    G: "217, 70, 239",   // Shuddha Ga: Violet
-    m: "16, 185, 129",   // Shuddha Ma: Emerald
-    M: "6, 182, 212",    // Teevra Ma: Peacock Teal
-    P: "245, 158, 11",   // Pa: Imperial Gold
-    d: "139, 92, 246",   // Komal Dha: Royal Purple
-    D: "99, 102, 241",   // Shuddha Dha: Indigo
-    n: "59, 130, 246",   // Komal Ni: Sky Blue
-    N: "14, 165, 233"    // Shuddha Ni: Cyan
-  };
-
-  const baseColorRGB = (activeNoteOrSwara && SWARA_COLORS[activeNoteOrSwara]) || "245, 158, 11";
-  const brightnessAlpha = activeNoteOrSwara ? 0.9 : 0.25;
+  // Swara color extraction
+  const swaraObj = (activeItem && SWARAS[activeItem]) || { color: "245, 158, 11" };
+  const [r, g, b] = swaraObj.color.split(",").map(Number);
 
   ctx.save();
-  const time = performance.now() * 0.0035;
-  const [r, g, b] = baseColorRGB.split(",").map(Number);
 
-  ctx.shadowBlur = 12 + (volume01 * 25);
-  ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.6 * brightnessAlpha})`;
+  // 1. Draw Expanding Tanpura Pluck Ripples
+  for (let i = tanpuraRipples.length - 1; i >= 0; i--) {
+    const ripple = tanpuraRipples[i];
+    ripple.radius += 2.8;
+    ripple.opacity *= 0.975;
 
-  for (let l = 0; l < lineCount; l++) {
     ctx.beginPath();
-    const lineYOffset = centerY + (l - (lineCount - 1) / 2) * 12;
+    ctx.arc(centerX, centerY, ripple.radius, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(245, 158, 11, ${ripple.opacity * 0.4})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    if (ripple.radius > ripple.maxRadius || ripple.opacity < 0.02) {
+      tanpuraRipples.splice(i, 1);
+    }
+  }
+
+  // 2. Draw Resonant Harmonic Chakra
+  const isPlaying = volume01 > 0.02 && Boolean(activeItem);
+  const baseRadius = 60 + (volume01 * 140);
+  const numPetals = 12; // 12 Svarasthanas / Shrutis
+  const rotationAngle = time * 0.3 + (tiltFactor * 0.8);
+
+  ctx.translate(centerX, centerY);
+  ctx.rotate(rotationAngle);
+
+  // Outer Petal Ring
+  ctx.beginPath();
+  for (let i = 0; i < numPetals; i++) {
+    const angle = (i * 2 * Math.PI) / numPetals;
+    const petalX = Math.cos(angle) * baseRadius;
+    const petalY = Math.sin(angle) * baseRadius;
+
+    const ctrlAngle1 = angle - 0.2;
+    const ctrlAngle2 = angle + 0.2;
+    const peakRadius = baseRadius + (isPlaying ? 35 + Math.sin(time * 3 + i) * 12 : 12);
+    const peakX = Math.cos(angle) * peakRadius;
+    const peakY = Math.sin(angle) * peakRadius;
+
+    if (i === 0) ctx.moveTo(petalX, petalY);
+    ctx.quadraticCurveTo(Math.cos(ctrlAngle1) * (baseRadius + 15), Math.sin(ctrlAngle1) * (baseRadius + 15), peakX, peakY);
+    ctx.quadraticCurveTo(Math.cos(ctrlAngle2) * (baseRadius + 15), Math.sin(ctrlAngle2) * (baseRadius + 15), petalX, petalY);
+  }
+  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${isPlaying ? 0.75 : 0.25})`;
+  ctx.lineWidth = isPlaying ? 2.5 : 1.2;
+  ctx.shadowBlur = isPlaying ? 25 : 8;
+  ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+  ctx.stroke();
+
+  // Inner Yantra Star / Polygon Ring
+  const innerPoints = 8;
+  const innerRadius = baseRadius * 0.55;
+  ctx.beginPath();
+  for (let i = 0; i < innerPoints * 2; i++) {
+    const rad = i % 2 === 0 ? innerRadius : innerRadius * 0.65;
+    const a = (i * Math.PI) / innerPoints;
+    const px = Math.cos(a) * rad;
+    const py = Math.sin(a) * rad;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = `rgba(254, 240, 138, ${isPlaying ? 0.7 : 0.2})`;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Core Bindu (Center Energy Dot)
+  ctx.beginPath();
+  ctx.arc(0, 0, isPlaying ? 8 + volume01 * 10 : 5, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(254, 240, 138, ${isPlaying ? 0.95 : 0.4})`;
+  ctx.fill();
+
+  ctx.restore();
+
+  // 3. Lower Dynamic Wave Ribbons
+  const ribbonCount = Math.max(1, Math.min(4, qualityIndex || 1));
+  const ribbonY = canvasHeight - 85;
+  const maxThickness = 1 + (volume01 * 8);
+
+  ctx.save();
+  for (let l = 0; l < ribbonCount; l++) {
+    ctx.beginPath();
+    const lineYOffset = ribbonY + (l - (ribbonCount - 1) / 2) * 12;
 
     for (let x = 0; x <= canvasWidth; x += 12) {
-      const baseSine = Math.sin(x * 0.005 + time + l * 0.45) * 18;
-      const jitter = (Math.random() - 0.5) * shakinessAmp * Math.sin(x * shakinessFreq + time);
+      const baseSine = Math.sin(x * 0.005 + time * 3.5 + l * 0.45) * 16;
+      const jitter = (Math.random() - 0.5) * (tiltFactor * 18);
       const y = lineYOffset + baseSine + jitter;
       if (x === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
 
-    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${brightnessAlpha})`;
-    ctx.lineWidth = Math.max(1, maxThickness - (l * 0.4));
+    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${isPlaying ? 0.85 : 0.25})`;
+    ctx.lineWidth = Math.max(1, maxThickness - l * 0.4);
     ctx.lineCap = "round";
-    ctx.lineJoin = "round";
     ctx.stroke();
   }
   ctx.restore();
 }
 
-// ---- Gesture State Debouncing & Stabilization ----
-const CHORD_HOLD_TIME_MS = 85;
+// Hand Skeleton Connections for elegant bone rendering
+const HAND_CONNECTIONS = [
+  [0, 1], [1, 2], [2, 3], [3, 4],       // Thumb
+  [0, 5], [5, 6], [6, 7], [7, 8],       // Index
+  [5, 9], [9, 10], [10, 11], [11, 12],  // Middle
+  [9, 13], [13, 14], [14, 15], [15, 16],// Ring
+  [13, 17], [17, 18], [18, 19], [19, 20],// Pinky
+  [0, 17]                               // Palm base
+];
+
+function drawFrame(results, canvasWidth, canvasHeight) {
+  const srcW = videoEl.videoWidth;
+  const srcH = videoEl.videoHeight;
+  if (!srcW || !srcH) return;
+
+  const { sx, sy, sWidth, sHeight } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
+
+  ctx.save();
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.translate(canvasWidth, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(videoEl, sx, sy, sWidth, sHeight, 0, 0, canvasWidth, canvasHeight);
+
+  // Subtle dark radial vignette for dramatic Indian concert ambiance
+  const vignette = ctx.createRadialGradient(
+    canvasWidth / 2, canvasHeight / 2, canvasWidth * 0.2,
+    canvasWidth / 2, canvasHeight / 2, canvasWidth * 0.75
+  );
+  vignette.addColorStop(0, "rgba(7, 9, 14, 0.25)");
+  vignette.addColorStop(1, "rgba(7, 9, 14, 0.75)");
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Render Hand Skeleton & Nodes
+  for (const landmarks of results.landmarks) {
+    const coords = landmarks.map((p) => {
+      const videoPx = p.x * srcW;
+      const videoPy = p.y * srcH;
+      return {
+        x: ((videoPx - sx) / sWidth) * canvasWidth,
+        y: ((videoPy - sy) / sHeight) * canvasHeight
+      };
+    });
+
+    // Bone lines
+    ctx.beginPath();
+    for (const [start, end] of HAND_CONNECTIONS) {
+      if (coords[start] && coords[end]) {
+        ctx.moveTo(coords[start].x, coords[start].y);
+        ctx.lineTo(coords[end].x, coords[end].y);
+      }
+    }
+    ctx.strokeStyle = "rgba(245, 158, 11, 0.35)";
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // Landmark dots
+    for (const pt of coords) {
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(254, 240, 138, 0.85)";
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = "rgba(245, 158, 11, 0.8)";
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function computeCoverRect(srcW, srcH, dstW, dstH) {
+  const srcRatio = srcW / srcH;
+  const dstRatio = dstW / dstH;
+  if (srcRatio > dstRatio) {
+    const sHeight = srcH;
+    const sWidth = srcH * dstRatio;
+    return { sx: (srcW - sWidth) / 2, sy: 0, sWidth, sHeight };
+  } else {
+    const sWidth = srcW;
+    const sHeight = srcW / dstRatio;
+    return { sx: 0, sy: (srcH - sHeight) / 2, sWidth, sHeight };
+  }
+}
+
+// State Stabilization
+const CHORD_HOLD_TIME_MS = 80;
 const VIBE_NULL_WINDOW_MS = 50;
 
 let stableState = null;
@@ -766,7 +942,23 @@ function updateVolumeMeter(volume01) {
   });
 }
 
-// ---- Camera & MediaPipe Setup ----
+function updateMeendGauge(meendCents) {
+  if (distortionDisplayEl) {
+    distortionDisplayEl.textContent = `${meendCents > 0 ? "+" : ""}${meendCents}¢`;
+  }
+  if (meendFillEl) {
+    if (meendCents >= 0) {
+      meendFillEl.style.left = "50%";
+      meendFillEl.style.width = `${Math.min(50, (meendCents / 100) * 50)}%`;
+    } else {
+      const span = Math.min(50, (Math.abs(meendCents) / 100) * 50);
+      meendFillEl.style.left = `${50 - span}%`;
+      meendFillEl.style.width = `${span}%`;
+    }
+  }
+}
+
+// MediaPipe & Camera Setup
 async function setupCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: { width: 640, height: 480 },
@@ -796,51 +988,6 @@ async function setupHandLandmarker() {
   });
 }
 
-// Cover cropping to mirror canvas without distortion
-function computeCoverRect(srcW, srcH, dstW, dstH) {
-  const srcRatio = srcW / srcH;
-  const dstRatio = dstW / dstH;
-  if (srcRatio > dstRatio) {
-    const sHeight = srcH;
-    const sWidth = srcH * dstRatio;
-    return { sx: (srcW - sWidth) / 2, sy: 0, sWidth, sHeight };
-  } else {
-    const sWidth = srcW;
-    const sHeight = srcW / dstRatio;
-    return { sx: 0, sy: (srcH - sHeight) / 2, sWidth, sHeight };
-  }
-}
-
-function drawFrame(results, canvasWidth, canvasHeight) {
-  const srcW = videoEl.videoWidth;
-  const srcH = videoEl.videoHeight;
-  if (!srcW || !srcH) return;
-
-  const { sx, sy, sWidth, sHeight } = computeCoverRect(srcW, srcH, canvasWidth, canvasHeight);
-
-  ctx.save();
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  ctx.translate(canvasWidth, 0);
-  ctx.scale(-1, 1);
-  ctx.drawImage(videoEl, sx, sy, sWidth, sHeight, 0, 0, canvasWidth, canvasHeight);
-
-  // Render tracking landmarks
-  ctx.fillStyle = "rgba(245, 158, 11, 0.7)";
-  for (const landmarks of results.landmarks) {
-    for (const point of landmarks) {
-      const videoPx = point.x * srcW;
-      const videoPy = point.y * srcH;
-      const canvasX = ((videoPx - sx) / sWidth) * canvasWidth;
-      const canvasY = ((videoPy - sy) / sHeight) * canvasHeight;
-
-      ctx.beginPath();
-      ctx.arc(canvasX, canvasY, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-  ctx.restore();
-}
-
 function resizeCanvas() {
   canvasEl.width = window.innerWidth;
   canvasEl.height = window.innerHeight;
@@ -850,11 +997,14 @@ function resizeCanvas() {
 modeSelectEl.addEventListener("change", () => {
   currentMode = modeSelectEl.value;
   thaatGroupEl.style.display = currentMode === "indian" ? "flex" : "none";
+  thaatRibbonEl.style.display = currentMode === "indian" ? "flex" : "none";
+  updateThaatRibbon();
   updateGestureGuide();
 });
 
 thaatSelectEl.addEventListener("change", () => {
   currentThaatKey = thaatSelectEl.value;
+  updateThaatRibbon();
   updateGestureGuide();
 });
 
@@ -896,7 +1046,7 @@ tanpuraVolumeEl.addEventListener("input", (e) => {
 
 guideToggleEl.addEventListener("click", () => {
   const isHidden = gestureGuideEl.classList.toggle("hidden");
-  guideToggleEl.textContent = isHidden ? "Mudra Guide" : "Close Guide";
+  guideToggleEl.textContent = isHidden ? "Show Mudra Guide" : "Close Guide";
 });
 
 helpButton.addEventListener("click", () => {
@@ -918,7 +1068,8 @@ startOverlayEl.addEventListener("click", () => {
   canvasEl.classList.remove("dimmed");
 });
 
-// Initialize Guide
+// Initialize UI Displays
+updateThaatRibbon();
 updateGestureGuide();
 
 // ---- Main Application Loop ----
@@ -953,12 +1104,10 @@ async function main() {
 
     // 2. Gesture Extraction
     let rawItem = null;
-    let rawModeOrThaat = currentThaatKey;
     let rawQualityIndex = 0;
     let rawSaptak = "madhya";
     let rawState = null;
 
-    // LEFT HAND = Swara (Indian) or Chord (Western)
     if (cachedLeftLandmarks) {
       if (currentMode === "indian") {
         rawItem = classifySwara(cachedLeftLandmarks, "Left", currentThaatKey);
@@ -967,7 +1116,6 @@ async function main() {
       }
     }
 
-    // RIGHT HAND = Voicing, Saptak, Meend & Volume
     let rightTilt = 0;
     let meendCents = 0;
     let currentVolume = 0;
@@ -977,8 +1125,6 @@ async function main() {
       rawQualityIndex = getRightHandQualityIndex(cachedRightLandmarks);
       rawSaptak = getSaptak(cachedRightLandmarks, "Right");
       rightTilt = getHandHorizontalTilt(cachedRightLandmarks, "Right");
-      
-      // Meend microtonal glide: ±100 cents
       meendCents = Math.round(rightTilt * 100);
     }
 
@@ -996,27 +1142,21 @@ async function main() {
     const activeSaptak = stable ? stable.saptak : rawSaptak;
     const activeQualityIndex = stable ? stable.qualityIndex : rawQualityIndex;
 
-    // 4. Update HUD
+    // 4. Update HUD & Gauges
     updateVolumeMeter(currentVolume);
-
-    if (distortionDisplayEl) {
-      if (currentMode === "indian") {
-        distortionDisplayEl.textContent = `Meend: ${meendCents > 0 ? "+" : ""}${meendCents}¢`;
-      } else {
-        distortionDisplayEl.textContent = `Filter: ${Math.round(rightTilt * 100)}%`;
-      }
-    }
+    updateMeendGauge(meendCents);
+    highlightActiveSwaraChip(activeItem);
 
     if (activeItem) {
       if (currentMode === "indian") {
         const swaraObj = SWARAS[activeItem] || { hindi: activeItem, name: activeItem };
         swaraDevanagariEl.textContent = swaraObj.hindi;
-        chordDisplayEl.textContent = `${swaraObj.name} (${swaraObj.full || activeItem})`;
-        
+        chordDisplayEl.textContent = `${swaraObj.name} • ${swaraObj.full || activeItem}`;
+
         const SAPTAK_LABELS = {
-          mandra: "Mandra Saptak (मंद्र - Lower)",
-          madhya: "Madhya Saptak (मध्य - Middle)",
-          tar: "Tar Saptak (तार - Higher)"
+          mandra: "Mandra Saptak (मंद्र)",
+          madhya: "Madhya Saptak (मध्य)",
+          tar: "Tar Saptak (तार)"
         };
         saptakIndicatorEl.textContent = SAPTAK_LABELS[activeSaptak] || "Madhya Saptak";
 
@@ -1030,14 +1170,14 @@ async function main() {
       } else {
         swaraDevanagariEl.textContent = "";
         chordDisplayEl.textContent = activeItem;
-        saptakIndicatorEl.textContent = activeSaptak === "mandra" ? "-8ve" : "Normal";
-        qualityDisplayEl.textContent = `Quality: ${activeQualityIndex}`;
+        saptakIndicatorEl.textContent = activeSaptak === "mandra" ? "Lower Octave (-8ve)" : "Standard Octave";
+        qualityDisplayEl.textContent = `Voicing Mode: ${activeQualityIndex}`;
       }
     } else {
       swaraDevanagariEl.textContent = "--";
       chordDisplayEl.textContent = "--";
-      qualityDisplayEl.textContent = "--";
-      saptakIndicatorEl.textContent = "Neutral";
+      qualityDisplayEl.textContent = "Neutral";
+      saptakIndicatorEl.textContent = "Madhya Saptak";
     }
 
     // 5. Audio Synthesis
@@ -1058,8 +1198,8 @@ async function main() {
       synth.setVolume(0);
     }
 
-    // 6. Visual Wave Rendering
-    drawEnergy(ctx, currentVolume, activeQualityIndex, rightTilt, activeItem);
+    // 6. Draw Sacred Geometric Chakra & Waves on Canvas
+    drawChakraMandala(ctx, canvasEl.width, canvasEl.height, currentVolume, activeQualityIndex, rightTilt, activeItem);
 
     requestAnimationFrame(loop);
   }
@@ -1067,4 +1207,4 @@ async function main() {
   loop();
 }
 
-main().catch((err) => console.error("Initialization error:", err));
+main().catch((err) => console.error("Application error:", err));
